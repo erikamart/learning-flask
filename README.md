@@ -77,9 +77,10 @@ $ pip freeze > requirements.txt
 $ python routes.py
 ```
 A properly working web app should allow a user to sign up and enter any address or zip code to view places of interest.  It will also informally allow the user to login or logout by adding the words respectively at the end of the link path in the browser bar:
+
 Example: 
-https://localhost:5000/logout
-https://localhost:5000/login
+* https://localhost:5000/logout
+* https://localhost:5000/login
 
 The connected database should also reflect new rows with user credentials that have signed up.
 
