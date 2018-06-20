@@ -50,7 +50,9 @@ $ sudo mysql -u root
 Create a new database called "learningflask" with a table in it called "users". The "users" table will have five columns titled for user id, first name, last name, email, and password.  Note: the password will be stored as encrypted data via code within the [models.py](https://github.com/erikamart/learning-flask/blob/master/models.py) file.
 
 **MariaDB [(none)]>** `create database learningflask;`
+
 **MariaDB [(none)]>** `use learningflask;`
+
 **MariaDB [(learningflask)]>** `CREATE TABLE users (uid int not null AUTO_INCREMENT PRIMARY KEY, firstname VARCHAR(100) not null, lastname VARCHAR(100) not null, email VARCHAR(120) not null unique, pwdhash VARCHAR(100) not null);`
 
 3. Using your command line interface (CLI), install python 3.6 (or the Anaconda distribution) and [Git].
