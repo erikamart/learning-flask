@@ -1,8 +1,8 @@
 # Building a Flask App to Discover Places Near You
 
-![](https://raw.githubusercontent.com/erikamart/learning-flask/master/static/img/learningFlask_sm.jpg)
+![N|Solid](https://raw.githubusercontent.com/erikamart/learning-flask/master/static/img/learningFlask_sm.jpg)
 
-This project demonstrates a web application using the Flask web framework.  The resulting app will allow a user to sign up, log in, find locations of interest near a specified address, and log out.
+This project demonstrates a web application using the Flask web framework.  The resulting app will allow a user to sign up, login/logout, and find locations of interest near a specified address.  Project code is from a Lynda.com Flask tutorial created by Packt Publishing and led by Lalith Polepeddi.
 
 ### Tech
 -------------------------------------------
@@ -30,8 +30,8 @@ What was used to make this project work:
 -------------------------------------------
 1. Development in a WSL environment is not as easy as one would think. There was a need to constantly address file permissions issues.  It's important to remember that you can grant permissions within a Linux environment, but those permissions will still always be independent of Windows permissions.  Not just that, but strangely even if a file or folder had been set with proper RWX permissions in Linux environment, every so often the permissions would get cleared out and need to be reset. I suppose this was the result of editing files in Sublime which was a Windows based program while simultaneously working with them through the Linux CLI. 
 2. The Heroku CLI package does not work with WSL as of yet.  There's workarounds, but it'll still be problematic and, in the end, not worth it.  If I had known before hand, I'd use a full-fledged UNIX or LINUX system.  Windows could do it all too, but command line commands could get a little too interesting for my taste. If you're a master of CLI and creating aliases and paths to other extensions; then have at it!
-3. Sometimes the long list of errors is caused by one simple lack of saving.  I had an issue where though my site worked fine locally, it kept failing and crashing on Heroku.  The issue was simply because the requirement.txt file Heroku was using was the very first copy made at the beginning of the project creation and not the final copy that listed ALL the necessary libraries that had been added through the end of the build.  Saving & updating files is your friend.  Don't forget your friend.
-4. Definitely start off using a database system hosted from a non-local server such as from Heroku or Postgres. Local testing is great, but when the time comes to deploy your left thinking, "I can't access my local database from this live Heroku site.  Now I have to import or start all over again setting up a database hosted elsewhere since I'm not going to be using my computer as a constant database server."  By the way, if you've read this far then I'll take the time to negate what I just said by pointing out that the below instructions are to set up the project locally. ;0)
+3. Sometimes the long list of errors is caused by one simple lack of saving.  I had an issue where though my site worked fine locally, but it kept failing and crashing on Heroku.  The issue was simply because the requirement.txt file Heroku was using was the very first copy made at the beginning of the project creation and not the final copy that listed ALL the necessary libraries that had been added through the end of the build.  Saving & updating files is your friend.  Don't forget your friend.
+4. Definitely start off using a database system hosted from a non-local server such as from Heroku. Local testing is great, but when the time comes to deploy you're left thinking, "I can't access my local database from this live Heroku site.  Now I have to export/import or start all over again setting up a database hosted elsewhere since I'm not going to be using my computer as a constant database server."  By the way, I'll take the time to negate what I just said by pointing out that the below instructions are to set up the project locally. ;0)
 
 ### Installation
 -------------------------------------------
@@ -44,21 +44,19 @@ Start the server to your database engine and login. My particular database is Ma
 $ sudo/etc/init.d/mysql start
 $ sudo mysql -u root
 (default password is blank so just hit enter)
-```
-**MariaDB [(none)]>**
 
+MariaDB [(none)]>
+```
 Create a new database called "learningflask" with a table in it called "users". The "users" table will have five columns titled for user id, first name, last name, email, and password.  Note: the password will be stored as encrypted data via code within the [models.py](https://github.com/erikamart/learning-flask/blob/master/models.py) file.
 
-**MariaDB [(none)]>** `create database learningflask;`
-
-**MariaDB [(none)]>** `use learningflask;`
-
-**MariaDB [(learningflask)]>** `CREATE TABLE users (uid int not null AUTO_INCREMENT PRIMARY KEY, firstname VARCHAR(100) not null, lastname VARCHAR(100) not null, email VARCHAR(120) not null unique, pwdhash VARCHAR(100) not null);`
+MariaDB [(none)]> `create database learningflask;`
+MariaDB [(none)]> `use learningflask;`
+MariaDB [(learningflask)]> `CREATE TABLE users (uid int not null AUTO_INCREMENT PRIMARY KEY, firstname VARCHAR(100) not null, lastname VARCHAR(100) not null, email VARCHAR(120) not null unique, pwdhash VARCHAR(100) not null);`
 
 3. Using your command line interface (CLI), install python 3.6 (or the Anaconda distribution) and [Git].
-4. Begin setting up Flask using a virtual environment** called [virtualenv] so that Flask and other libraries are in an isolated environment that will not affect the rest of the computer. 
+4. Begin setting up Flask using a virtual environment called [virtualenv] so that Flask and other libraries are in an isolated environment that will not affect the rest of the computer. (see note below if you installed Anaconda)
 Pip should already be installed when python gets installed, but if you get an error trying to install virtualenv then follow the directions [here](https://pip.pypa.io/en/stable/installing/) to install pip. 
-** If you installed Anaconda, you can use the [conda](http://www.puzzlr.org/install-packages-pip-conda-environment/) package manager to use the conda virtual environment and then install a pip version specifically into the environment per the directions in the link.
+NOTE: If you installed Anaconda, you can use the [conda](http://www.puzzlr.org/install-packages-pip-conda-environment/) package manager to use the conda virtual environment and then install a pip version specifically into the environment per the directions on the website link.
 5. Clone or Download the [learning-flask](https://github.com/erikamart/learning-flask.git) repository files into your local computer system.
 
 6. Using your CLI, change into the main project folder to activate virtualenv.
@@ -68,6 +66,11 @@ $ cd learning-flask
 $ source venv/bin/activate
 ```
 You should see (venv) appear above or beside your usual command line entry line. ALWAYS make sure you have venv activated throughout the package install process!
+
+Note: If you need to close the virtual environment just type 
+```sh
+$ deactivate
+```
 
 7. Install the rest of the remaining libraries from the Tech section above. NOTE: pymysql is specifically for MySQL database.
 
@@ -83,7 +86,7 @@ $ pip install gunicorn
 ```sh
 $ pip freeze > requirements.txt
 ```
-10. Test the app.
+10. Test the app locally with
 ```sh
 $ python routes.py
 ```
