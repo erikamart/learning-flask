@@ -4,6 +4,10 @@
   <main class="hero-section">
     <div class="container">
 
+    <p>
+      <a href="{{ url_for('logout') }}" class="btn-primary">Logout</a>
+    </p>
+
       <div class="section-tabs">
         <div class="places">
           {% for place in places %}
