@@ -2,10 +2,16 @@ from flask import Flask, render_template, request, session, redirect, url_for
 from models import db, User, Place
 from forms import SignupForm, LoginForm, AddressForm
 import pymysql
+import os
+# line 5 added to use .env file that stores environment variables that should not be public
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@127.0.0.1:3306/learningflask'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@127.0.0.1:3306/learningflask'
+# line 10 is for general local database connection 
+# line 13 is for local heroku database connection using .env file that has private JAWSDB_URL connection string
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('JAWSDB_URL')
+
 db.init_app(app)
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
