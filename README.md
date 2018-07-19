@@ -28,18 +28,19 @@ What was used to make this project work:
 
 ### Lessons learned
 -------------------------------------------
-1. Development in a WSL environment is not as easy as one would think. There was a need to constantly address file permissions issues.  It's important to remember that you can grant permissions within a Linux environment, but those permissions will still always be independent of Windows permissions.  Not just that, but strangely even if a file or folder had been set with proper RWX permissions in Linux environment, every so often the permissions would get cleared out and need to be reset. I suppose this was the result of editing files in Sublime which was a Windows based program while simultaneously working with them through the Linux CLI. 
-2. The Heroku CLI package does not work with WSL as of yet.  There's workarounds, but it'll still be problematic and, in the end, not worth it.  If I had known before hand, I'd use a full-fledged UNIX or LINUX system.  Windows could do it all too, but command line commands could get a little too interesting for my taste. If you're a master of CLI and creating aliases and paths to other extensions; then have at it!
-3. Sometimes the long list of errors is caused by one simple lack of saving.  I had an issue where though my site worked fine locally, but it kept failing and crashing on Heroku.  The issue was simply because the requirement.txt file Heroku was using was the very first copy made at the beginning of the project creation and not the final copy that listed ALL the necessary libraries that had been added through the end of the build.  Saving & updating files is your friend.  Don't forget your friend.
-4. Definitely start off using a database system hosted from a non-local server such as from Heroku. Local testing is great, but when the time comes to deploy you're left thinking, "I can't access my local database from this live Heroku site.  Now I have to export/import or start all over again setting up a database hosted elsewhere since I'm not going to be using my computer as a constant database server."  By the way, I'll take the time to negate what I just said by pointing out that the below instructions are to set up the project locally. ;0)
+1. Development in a WSL environment is not as easy as one would think. There was a need to constantly address file permissions issues.  It's important to remember that you can grant permissions within a Linux environment, but those permissions will still always be independent of Windows permissions.  Not just that, but strangely even if a file or folder had been set with proper RWX permissions in Linux environment, every so often the permissions would get cleared out and need to be reset. This was the result of editing files in Sublime which was a Windows based program while simultaneously working with them through the WSL Debian CLI. 
+2. The Heroku CLI package does not work with WSL as of yet.  The reason is, WSL cannot use `systemctl` to control server programs. When attempted, an error of "Failed to connect to bus: No such file or directory" is produced. You can start dbus, but in the end there is no `systemd` and no `systemctl`. There are workarounds, but it will still be problematic and, in the end, not worth it.  If I had known before hand, I'd have used a full-fledged UNIX or LINUX system.  Windows could do it all too, but command line commands could get a little too interesting for my taste. If you're a master of CLI and creating aliases and paths to other extensions; then have at it!
+3. Sometimes the long list of errors is caused by one simple lack of saving.  I had an issue where my site worked fine locally, but it kept failing and crashing on Heroku.  The issue was simply because the requirement.txt file Heroku was using was the very first copy made at the beginning of the project creation and not the final copy that listed ALL the necessary libraries that had been added through the end of the code writing.  Saving & updating files is your friend.  Don't forget your friend.
+4. It is best to start off using a local relational database management system (RDBMS) to get things working and then convert to a non-locally hosted server. Local testing is great when you're first learning and don't want to hassle with heaps of hurdles to overcome.  When the time comes to deploy it'll be fewer changes to make it happen.  NOTE: Refer to branch `new_feature` for instruction Steps 15 and on to set up a non-locally hosted RDBMS. Do this as a final step if you want a fully functioning app on Heroku.
+
 
 ### Installation
 -------------------------------------------
 1. Create your own accounts for Github and Heroku
 
-2. Setup your preference of text editor and relational database. The database connection to the app will come later but keep this in mind for now: This project code connects to a locally hosted database with the user of root and default password credentials for MySQL.
+2. Setup your preference of text editor and relational database system. The database connection to the app will come later but keep this in mind for now: This project code connects to a locally hosted database with the user of root and default password credentials for MySQL.
 
-Start the server to your database engine and login. My particular database is MariaDB so as soon as I logged in that's what appears in the command line.
+Start the server for your database engine and login. My particular database is MariaDB so as soon as I logged in that's what appears in the command line.
 ```sh
 $ sudo/etc/init.d/mysql start
 $ sudo mysql -u root
@@ -80,15 +81,15 @@ $ pip install pymysql
 $ pip install geocoder
 $ pip install gunicorn
 ```
-8. Open routes.py and alter lines 4 and/or 8 to connect to the database management system you chose.  You may need to use a different database connector for python to talk to your database. Be sure to pip install the connector you use.
+8. If the database management system you chose differs from mysql/mariaDB, then open routes.py and alter the lines containing `pymysql` found in line 4 and 8.  You may need to use a different database connector for python to talk to your database. Be sure to pip install the connector you use.
 
-9. If you had to make the changes in Step 8 then you must update the requirements.txt file to maintain the list of python libraries so that deployment to Heroku will not fail.
+9. If you had to make the changes in Step 8 then you must update the "requirements.txt" file to maintain the list of python libraries so that deployment to Heroku will not fail.
 ```sh
 $ pip freeze > requirements.txt
 ```
 10. Test the app locally with
 ```sh
-$ python routes.py
+$ FLASK_APP=routes.py FLASK_ENV=development flask run
 ```
 A properly working web app should allow a user to sign up and enter any address or zip code to view places of interest.  It will also informally allow the user to login or logout by adding the words respectively at the end of the link path in the browser bar. 
 
@@ -98,21 +99,45 @@ Examples:
 
 The connected database should also reflect new rows with user credentials that have signed up.
 
-11. Save and commit all file changes to Git
+11. Initalize your git folder, add files to staging, commit, and finally push files to your Github.
+```sh
+$ cd learning-flask
+$ git init
+Add files to staging and commit at the same time
+$ git commit -am "Description of commit"
+```
+Login to GitHub.com and create a new repository. Type in the name, "learning-flask", for your repository and create it. Push your existing local repository to the newly created github repository. Remember the `USERNAME` area in the below commands should be replaced with your specific username on github.
+```sh
+$ git remote add origin https://github.com/USERNAME/learning-flask.git
+$ git push -u origin master
+Enter username and password when prompted
+```
 12. Deploy to Heroku
 ```sh
 $ heroku login
-(Enter email and password when prompted)
+Enter email and password when prompted
+```
+Then create a Heroku app.
+```sh
 $ heroku create
+```
+Then push the flask app to the heroku remote repository.
+```sh
 $ git push heroku master
+```
+Open the heroku app to see it works.
+```sh
 $ heroku open
 ```
 
-13. Optionally you can push your new repository to github and connect Heroku to it so that any later commits can be detected and deployed automatically.
+Optionally you can push your app repository to github only and connect it to Heroku through the Heroku dashboard. In the dashboard you can also set it up so that any later github commits can be detected and deployed automatically.
+
+At this point, your RDBMS is still locally hosted by your computer and will therefore not work on the heroku app. To fix this, you need to switch to a non-locally hosted RDBMS. See the branch of this repo called "new_feature" to do this.
 
 ### Todos
 -------------------------------------------
  - Make a login/logout button
+ - Switch to a non-locally hosted RDBMS
 
 
    [Sublime 3]: <https://www.sublimetext.com/>
