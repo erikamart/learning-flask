@@ -8,7 +8,7 @@ import os
 app = Flask(__name__)
 
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@127.0.0.1:3306/learningflask'
-# line 10 is for general local database connection 
+# line 10 is for general local database connection
 # line 13 is for local heroku database connection using .env file that has private JAWSDB_URL connection string
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('JAWSDB_URL')
 
@@ -18,13 +18,16 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 app.secret_key = "development-key"
 
+
 @app.route("/")
 def index():
     return render_template("index.html")
 
+
 @app.route("/about")
 def about():
     return render_template("about.html")
+
 
 @app.route("/signup", methods=['GET', 'POST'])
 def signup():
@@ -35,7 +38,7 @@ def signup():
 
     if request.method == 'POST':
         if form.validate() == False:
-           return render_template('signup.html', form=form) 
+            return render_template('signup.html', form=form)
         else:
             newuser = User(form.first_name.data, form.last_name.data, form.email.data, form.password.data)
             db.session.add(newuser)
@@ -47,6 +50,7 @@ def signup():
     elif request.method == 'GET':
         return render_template('signup.html', form=form)
 
+
 @app.route("/login", methods=['GET', 'POST'])
 def login():
     if 'email' in session:
@@ -56,7 +60,7 @@ def login():
 
     if request.method == 'POST':
         if form.validate() == False:
-           return render_template('login.html', form=form)
+            return render_template('login.html', form=form)
         else:
             email = form.email.data
             password = form.password.data
@@ -71,10 +75,12 @@ def login():
     elif request.method == 'GET':
         return render_template('login.html', form=form)
 
+
 @app.route("/logout")
 def logout():
     session.pop('email', None)
     return redirect(url_for('index'))
+
 
 @app.route("/home", methods=['GET', 'POST'])
 def home():
@@ -84,14 +90,14 @@ def home():
     form = AddressForm()
 
     places = []
-    my_coordinates = (37.4221, -122.0844)
+    my_coordinates = (45.5201972, -122.674997)
 
     if request.method == 'POST':
         if form.validate() == False:
             return render_template("home.html", form=form)
         else:
             # get the address
-            address = form.address.data 
+            address = form.address.data
 
             # query for places around it
             p = Place()
@@ -100,9 +106,10 @@ def home():
 
             # return those results
             return render_template('home.html', form=form, my_coordinates=my_coordinates, places=places)
-    
+
     elif request.method == 'GET':
         return render_template("home.html", form=form, my_coordinates=my_coordinates, places=places)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
